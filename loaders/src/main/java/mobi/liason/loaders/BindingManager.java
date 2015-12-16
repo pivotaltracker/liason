@@ -8,6 +8,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.common.collect.Lists;
 
@@ -107,7 +108,9 @@ public class BindingManager implements LoaderCallbacks<Cursor> {
         for (final ForceLoadCursorLoader forceLoadCursorLoader : forceLoadCursorLoaders) {
             final ContentObserver contentObserver = forceLoadCursorLoader.getForceLoadContentObserver();
             context.getContentResolver().unregisterContentObserver(contentObserver);
+            forceLoadCursorLoader.cancelLoadInBackground();
         }
+        Log.d("liason", "Unregistered cursors");
     }
 
     public void restartLoader(final BindDefinition bindDefinition) {
