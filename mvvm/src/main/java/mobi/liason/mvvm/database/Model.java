@@ -1,6 +1,11 @@
 package mobi.liason.mvvm.database;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Looper;
+import android.util.Log;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -13,9 +18,9 @@ import mobi.liason.loaders.Content;
 import mobi.liason.loaders.Path;
 import mobi.liason.mvvm.database.annotations.ColumnDefinition;
 import mobi.liason.mvvm.database.annotations.ColumnDefinitions;
-import mobi.liason.mvvm.database.annotations.PrimaryKey;
 import mobi.liason.mvvm.database.annotations.PathDefinition;
 import mobi.liason.mvvm.database.annotations.PathDefinitions;
+import mobi.liason.mvvm.database.annotations.PrimaryKey;
 import mobi.liason.mvvm.database.annotations.Unique;
 
 /**
@@ -36,6 +41,17 @@ public abstract class Model extends Content {
 
     public Model(){
         initializeAnnotations();
+    }
+
+    @Override
+    public Cursor query(Context context, SQLiteDatabase sqLiteDatabase, Path path, Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        long currentTime = System.currentTimeMillis();
+        Cursor cursor = super.query(context, sqLiteDatabase, path, uri, projection, selection, selectionArgs, sortOrder);
+
+        boolean isMainThread = Looper.getMainLooper().getThread() == Thread.currentThread();
+
+        Log.d("liason", "query on " + uri.toString() + " took " + (System.currentTimeMillis() - currentTime) + " onMainThread? " + isMainThread);
+        return cursor;
     }
 
     public void initializeAnnotations() {
