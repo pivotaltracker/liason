@@ -50,7 +50,7 @@ public abstract class Model extends Content {
 
         boolean isMainThread = Looper.getMainLooper().getThread() == Thread.currentThread();
 
-        Log.d("liason", "query on " + uri.toString() + " took " + (System.currentTimeMillis() - currentTime) + " onMainThread? " + isMainThread);
+        Log.d("liason", "query on " + uri.toString() + " took " + (System.currentTimeMillis() - currentTime) + " onMainThread: " + isMainThread);
         return cursor;
     }
 
