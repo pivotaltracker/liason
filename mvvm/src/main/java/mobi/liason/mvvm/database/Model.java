@@ -1,5 +1,6 @@
 package mobi.liason.mvvm.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -52,6 +53,39 @@ public abstract class Model extends Content {
 
         Log.d("liason", "query on " + uri.toString() + " took " + (System.currentTimeMillis() - currentTime) + " onMainThread: " + isMainThread);
         return cursor;
+    }
+
+    @Override
+    public Uri insert(Context context, SQLiteDatabase sqLiteDatabase, Path path, Uri uri, ContentValues values) {
+        long currentTime = System.currentTimeMillis();
+        Uri insertUri = super.insert(context, sqLiteDatabase, path, uri, values);
+
+        boolean isMainThread = Looper.getMainLooper().getThread() == Thread.currentThread();
+
+        Log.d("liason", "insert on " + uri.toString() + " with resulting uri " + insertUri + " took " + (System.currentTimeMillis() - currentTime) + " onMainThread: " + isMainThread);
+        return insertUri;
+    }
+
+    @Override
+    public int update(Context context, SQLiteDatabase sqLiteDatabase, Path path, Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        long currentTime = System.currentTimeMillis();
+        int updateResult =  super.update(context, sqLiteDatabase, path, uri, values, selection, selectionArgs);
+
+        boolean isMainThread = Looper.getMainLooper().getThread() == Thread.currentThread();
+
+        Log.d("liason", "update on " + uri.toString() + " result " + updateResult + " took " + (System.currentTimeMillis() - currentTime) + " onMainThread: " + isMainThread);
+        return updateResult;
+    }
+
+    @Override
+    public int delete(Context context, SQLiteDatabase sqLiteDatabase, Path path, Uri uri, String selection, String[] selectionArgs) {
+        long currentTime = System.currentTimeMillis();
+        int deleteResult =  super.delete(context, sqLiteDatabase, path, uri, selection, selectionArgs);
+
+        boolean isMainThread = Looper.getMainLooper().getThread() == Thread.currentThread();
+
+        Log.d("liason", "delete on " + uri.toString() + " result " + deleteResult + " took " + (System.currentTimeMillis() - currentTime) + " onMainThread: " + isMainThread);
+        return deleteResult;
     }
 
     public void initializeAnnotations() {
